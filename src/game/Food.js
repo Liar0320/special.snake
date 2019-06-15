@@ -42,9 +42,15 @@ function routeMap() {
         init:function (len) {
             let x_counts = canvas.x_counts;
             let y_counts = canvas.y_counts;
-            for (let index = 0; index < len; index++) {
-                this.set(new Food(Math.floor(Math.random()*x_counts),Math.floor(Math.random()*y_counts),null));
-            }
+
+           let counts = was();
+            counts.forEach(item=>{
+                this.set(new Food(item[0],item[1],null));
+            })
+
+            // for (let index = 0; index < len; index++) {
+            //     this.set(new Food(Math.floor(Math.random()*x_counts),Math.floor(Math.random()*y_counts),null));
+            // }
         }
     }
 }
@@ -71,15 +77,121 @@ class FoodFactory {
      * @param {CanvasRenderingContext2D} ctx 
      */
     render(ctx){
-        ctx.fillStyle = '#333';
+        ctx.fillStyle = '#fff';
         let size = canvas.size;
         ctx.fillRect(this.food.x*size,this.food.y*size,size,size);
     }
 
+    /**
+     * was
+     */
+    renderWas(ctx){
+        if(!this.was) this.was = [];
+        ctx.fillStyle = '#800080';
+        let size = canvas.size;
+        this.was.forEach(item=>{
+            ctx.fillRect(item.x*size,item.y*size,size,size);
+        })
+    }
+
     destroyed(){
+        /**was */
+        if(this.was){
+            this.was.push(this.food);
+        }else{
+            this.was = [];
+        } 
+
+
         this.food = null;
     }
     
+}
+
+/**was */
+function was() {
+    var counts = [];
+    for (let index = 0; index < 10; index++) {
+        let temp = [10+(index/2),40+index];
+        // temp.push();
+        counts.push (temp);
+    }
+
+    for (let index = 0; index < 10; index++) {
+        let temp = [15+(index/2),50-index];
+        // temp.push();
+        counts.push (temp);
+    }
+
+    for (let index = 0; index < 10; index++) {
+        let temp = [20+(index/2),40+index];
+        // temp.push();
+        counts.push (temp);
+    }
+    for (let index = 0; index < 10; index++) {
+        let temp = [25+(index/2),50-index];
+        // temp.push();
+        counts.push (temp);
+    }
+
+   
+    for (let index = 0; index < 10; index++) {
+        let temp = [35+(index/2),50-index];
+        // temp.push();
+        counts.push (temp);
+    }
+
+ 
+    for (let index = 0; index < 10; index++) {
+        let temp = [40+(index/2),40+index];
+        // temp.push();
+        counts.push (temp);
+    }
+
+    for (let index = 0; index < 5; index++) {
+        let temp = [38+(index),45];
+        // temp.push();
+        counts.push (temp);
+    }
+    
+    for (let index = 0; index < 10; index++) {
+        let temp = [40+(index/2),40+index];
+        // temp.push();
+        counts.push (temp);
+    }
+
+    for (let index = 0; index < 5; index++) {
+        let temp = [38+(index),45];
+        // temp.push();
+        counts.push (temp);
+    }
+
+    for (let index = 0; index < 5; index++) {
+        let temp = [50+(index),40];
+        // temp.push();
+        counts.push (temp);
+    }
+
+    for (let index = 0; index < 4; index++) {
+        let temp = [50+(index),41+index];
+        // temp.push();
+        counts.push (temp);
+    }
+
+    for (let index = 0; index < 5; index++) {
+        let temp = [54-(index),45+index];
+        // temp.push();
+        counts.push (temp);
+    }
+    for (let index = 0; index < 5; index++) {
+        let temp = [50+(index),50];
+        // temp.push();
+        counts.push (temp);
+    }
+    
+    
+  
+    return counts;
 }
 
 export {

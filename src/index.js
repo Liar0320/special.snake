@@ -2,7 +2,7 @@
  * @Author: liar 
  * @Date: 2019-06-15 19:24:24 
  * @Last Modified by: liar
- * @Last Modified time: 2019-06-15 21:51:18
+ * @Last Modified time: 2019-06-15 23:25:55
  */
 // ?$$  "$N        $$$  ^#$            $              d$*  "$d       '$$F  "$r   
 // '$$   $$k       9$$    '           d$N            $$F     *        $$>    *   
@@ -68,7 +68,7 @@ const background = new Background();
 const snake = new Snake(); 
 const foodFactory = new FoodFactory(); 
 // let food = null;
-snake.speed = 0.5
+snake.speed = 0.3
 /**
  * 每帧的更新
  * @param {Number} time 
@@ -91,6 +91,7 @@ function update(time,ctx) {
         snake.eat();
         foodFactory.destroyed();
     }
+    foodFactory.renderWas(ctx);
 }
 
 
