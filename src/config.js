@@ -1,5 +1,5 @@
 const canvas = {
-    __size:10,
+    __size:5,
     /**每一个格子大小 */
     get size(){
         return this.__size;
@@ -12,7 +12,7 @@ const canvas = {
 
 
     /**x轴上的格子数量 */
-    __x_counts:50,
+    __x_counts:100,
     get x_counts(){
         return this.__x_counts;
     },
@@ -24,7 +24,7 @@ const canvas = {
 
 
     /**y轴上的格子数量 */
-    __y_counts:50,
+    __y_counts:100,
     get y_counts(){
         return this.__y_counts;
     },

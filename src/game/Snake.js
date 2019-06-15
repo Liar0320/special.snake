@@ -37,8 +37,7 @@ class Snake {
         this.header = null;
 
         this.__createBody(new SnakeBody(0,0,null));
-        this.__createBody(new SnakeBody(1,0,null));
-        this.__createBody(new SnakeBody(2,0,null));
+
     }
 
     /**
@@ -63,29 +62,53 @@ class Snake {
        this.move();
     }
 
+    /**
+     * 吃
+     */
+    eat () {
+        this.__createBody(this.createNextBody());
+    }
+    
+    /**
+     * 死亡
+     */
+    died (){
+        console.log("蛇死了");
+    }
+
+    /**创建下一个蛇的身体
+     * @param {SnakeBody} next 
+     * @returns {SnakeBody}
+     */
+    createNextBody(next){
+        next = next || null;
+        let prev = null;
+        let speed = this.speed;
+        switch (this.direction) {
+            case DIRECTION.up:
+                prev = new SnakeBody(this.header.x,this.header.y-speed,next);
+                break;
+            case DIRECTION.right:
+                prev = new SnakeBody(this.header.x+speed,this.header.y,next);
+                break;
+            case DIRECTION.down:
+                prev = new SnakeBody(this.header.x,this.header.y+speed,next);
+                break;
+            case DIRECTION.left:
+                prev = new SnakeBody(this.header.x-speed,this.header.y,next);
+                break;
+            default:
+                break;
+        }
+        return prev;
+    }
+
     /**  在render 渲染一次之后进行位置的移动 
      *  当前节点占据上一个节点的位置 。 并且缓存当前节点 ，作为 下次循环的上一个节点
      *  生成一个超前的节点 给头节点占位
      * */
     move (){
-        let prev = null;
-        let speed = this.speed;
-        switch (this.direction) {
-            case DIRECTION.up:
-                prev = new SnakeBody(this.header.x,this.header.y-speed,null);
-                break;
-            case DIRECTION.right:
-                prev = new SnakeBody(this.header.x+speed,this.header.y,null);
-                break;
-            case DIRECTION.down:
-                prev = new SnakeBody(this.header.x,this.header.y+speed,null);
-                break;
-            case DIRECTION.left:
-                prev = new SnakeBody(this.header.x-speed,this.header.y,null);
-                break;
-            default:
-                break;
-        }
+        let prev = this.createNextBody();
         // prev = this.header;
         // let current = prev.next;
 
@@ -94,6 +117,7 @@ class Snake {
         while (current) {
            
             let temp = new SnakeBody(current.x,current.y,null);
+
             current.x = prev.x;
             current.y = prev.y;
             

@@ -6,20 +6,37 @@ import _ from 'lodash';
 /**游戏组件 */
 import Background from './game/Background';
 import {Snake,DIRECTION} from "./game/Snake";
+import {FoodFactory} from "./game/Food";
 
 
+import isCollide from "./collide";
 
 /**初始化游戏组件 */
 const background = new Background(); 
 const snake = new Snake(); 
+const foodFactory = new FoodFactory(); 
+// let food = null;
 snake.speed = 1
 /**
  * 每帧的更新
+ * @param {Number} time 
  * @param {CanvasRenderingContext2D} ctx 
  */
-function update(ctx) {
+function update(time,ctx) {
     background.render(ctx);
     snake.render(ctx);
+
+
+
+    if(!foodFactory.food){
+        foodFactory.create();
+    }
+    foodFactory.render(ctx);
+
+    if(isCollide(foodFactory.food,snake)){
+        snake.eat();
+        foodFactory.destroyed();
+    }
 }
 
 
@@ -65,8 +82,8 @@ function init() {
     var ctx = c.getContext("2d");
     document.body.append(c);
     function loop() {
-        window.requestAnimationFrame(()=>{
-            update(ctx);
+        window.requestAnimationFrame((time)=>{
+            update(time,ctx);
             loop();
         });
     }
