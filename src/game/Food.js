@@ -10,6 +10,7 @@ class Food {
     constructor(x,y,next){
         this.x = x || 0;
         this.y = y || 0;
+        this.size = canvas.size; //保存size大小
         this.next = next || next;
     }
 }

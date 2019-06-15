@@ -1,5 +1,6 @@
 import { Snake } from "./game/Snake";
 import { Food } from "./game/Food";
+import { canvas } from "./config";
 
 /**
  * 碰撞检测
@@ -17,8 +18,49 @@ function isCollide(food,snake) {
    return result;
 }
 
+/**
+ * 
+ * @param {Food} food 
+ * @param {snakeBody} snakeBody 
+ * 两个物体有交集即
+ */
 function isSame(food,snakeBody) {
-    return (food.x === snakeBody.x) && (food.y === snakeBody.y);
+    return (Math.abs(snakeBody.x - food.x ) < 1) &&  (Math.abs(snakeBody.y - food.y)< 1) ;
 }
 
-export default isCollide;
+/**
+ * @param {snakeBody} header 
+ */
+function isSnakeSelfCollide(header) {
+   // let first = header;
+   let node = header.next;
+   let result = false;
+   if(node === null) return false;
+   node = node.next;
+   while (node && !result) {
+      // result = (header.x === node.x ) &&  (header.y === node.y )
+      result = isSame(node,header);
+      node = node.next;
+   }
+   return result;
+}
+
+/**
+ * @param {snakeBody} header 
+ */
+function isSnakeToWall(header) {
+   if(header.x < 0 || header.y<0 || header.x > (canvas.x_counts) || header.y > (canvas.y_counts)){
+      return true;
+   }else{
+      return false;
+   }
+}
+
+function isGameOver(header) {
+   return  isSnakeToWall(header) ||  isSnakeSelfCollide(header) ;
+}
+
+export  {
+   isCollide,
+   isGameOver,
+};

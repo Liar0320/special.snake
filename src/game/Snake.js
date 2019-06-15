@@ -17,6 +17,7 @@ class SnakeBody {
     constructor(x,y,next){
         this.x = x || 0;
         this.y = y || 0;
+        this.size = canvas.size; //保存size大小
         this.next = next || next;
     }
 }
@@ -59,14 +60,25 @@ class Snake {
             ctx.fillRect(node.x*size,node.y*size,size,size);
             node = node.next;
         }
-       this.move();
+        
+        // if(this.count > this.speed){
+        //     this.move();
+        //     this.count = 0;
+        // }else{
+        //     if(this.count == undefined) this.count = 0;
+        //     this.count++;
+        // }
+
+        this.move();
+     
+       
     }
 
     /**
      * 吃
      */
     eat () {
-        this.__createBody(this.createNextBody());
+        this.__createBody(this.createNextBody(null,1));
     }
     
     /**
@@ -80,22 +92,22 @@ class Snake {
      * @param {SnakeBody} next 
      * @returns {SnakeBody}
      */
-    createNextBody(next){
+    createNextBody(next,speed){
         next = next || null;
         let prev = null;
-        let speed = this.speed;
+        speed = speed || this.speed;
         switch (this.direction) {
             case DIRECTION.up:
-                prev = new SnakeBody(this.header.x,this.header.y-speed,next);
+                prev = new SnakeBody(this.header.x,calc(this.header.y,speed,'-'),next);
                 break;
             case DIRECTION.right:
-                prev = new SnakeBody(this.header.x+speed,this.header.y,next);
+                prev = new SnakeBody(calc(this.header.x,speed,'+'),this.header.y,next);
                 break;
             case DIRECTION.down:
-                prev = new SnakeBody(this.header.x,this.header.y+speed,next);
+                prev = new SnakeBody(this.header.x,calc(this.header.y,speed,'+'),next);
                 break;
             case DIRECTION.left:
-                prev = new SnakeBody(this.header.x-speed,this.header.y,next);
+                prev = new SnakeBody(calc(this.header.x,speed,'-'),this.header.y,next);
                 break;
             default:
                 break;
@@ -108,7 +120,8 @@ class Snake {
      *  生成一个超前的节点 给头节点占位
      * */
     move (){
-        let prev = this.createNextBody();
+        let speed = this.speed;
+        let prev = this.createNextBody(null,speed);
         // prev = this.header;
         // let current = prev.next;
 
@@ -118,14 +131,48 @@ class Snake {
            
             let temp = new SnakeBody(current.x,current.y,null);
 
-            current.x = prev.x;
-            current.y = prev.y;
+            if(current.direct){
+                if(current[current.direct] !== prev[current.direct]){
+                    let direct = current[current.direct] > prev[current.direct]  ? -1 : 1;
+                    current[current.direct] = calc(current[current.direct],direct * speed , '+')  ;
+                }else{
+                    current.direct = null;
+                }
+            }
+            if(!current.direct){
+                //判断运动的方向
+                if(current.x !== prev.x){
+                    let direct = current.x > prev.x  ? -1 : 1;
+                    current.x = calc(current.x,direct * speed , '+')
+                    current.direct = 'x';
+                }else if(current.y !== prev.y){
+                    let direct = current.y > prev.y ? -1 : 1;
+                    // current.y +=  direct * speed;
+                    current.y = calc(current.y,direct * speed , '+')
+                    current.direct = 'y';
+                }
+            }
+
+            
             
             prev = temp ;
             current = current.next;
         }
 
     }
+}
+
+function calc(a,b,opreater) {
+    let result = 0;
+    switch (opreater) {
+        case '+': result = Math.round((a*1000+b*1000))/1000
+            break;
+        case '-': result = Math.round((a*1000-b*1000))/1000
+            break;
+        default:
+            break;
+    }
+    return result;
 }
 
 export  {
