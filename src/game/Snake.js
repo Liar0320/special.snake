@@ -196,6 +196,5 @@ function calc(a,b,opreater) {
 }
 
 export  {
-    Snake,
-    DIRECTION
+    Snake
 } ;

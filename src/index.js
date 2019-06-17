@@ -2,7 +2,7 @@
  * @Author: liar 
  * @Date: 2019-06-15 19:24:24 
  * @Last Modified by: lich
- * @Last Modified time: 2019-06-17 14:09:50
+ * @Last Modified time: 2019-06-17 16:46:12
  */
 // ?$$  "$N        $$$  ^#$            $              d$*  "$d       '$$F  "$r   
 // '$$   $$k       9$$    '           d$N            $$F     *        $$>    *   
@@ -78,6 +78,7 @@ let snake = new Snake(1,1,DIRECTION.down);
 
 /**🐀 */
 const foodFactory = new FoodFactory(); 
+foodFactory.create();
 
 /**🎮控制 */
 const gameCtrl = new GameCtrl();
@@ -97,19 +98,19 @@ function update(time,ctx) {
     }
 
     background.render(ctx);
+    foodFactory.renderWas(ctx);
     snake.render(ctx);
-
-    if(!foodFactory.food){
-        foodFactory.create();
-    }
     foodFactory.render(ctx);
 
     if(isCollide(foodFactory.food,snake)){
         snake.eat();
         foodFactory.destroyed();
     }
-    
-    foodFactory.renderWas(ctx);
+
+    if(!foodFactory.food){
+        foodFactory.create();
+    }
+
 }
 
 
@@ -158,7 +159,7 @@ function init() {
         // });
         setInterval(()=>{
             update(0,ctx);
-        },50);
+        },1000/60);
     }
     loop();
 }
