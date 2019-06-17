@@ -1,8 +1,8 @@
 /*
  * @Author: liar 
  * @Date: 2019-06-15 19:24:24 
- * @Last Modified by: liar
- * @Last Modified time: 2019-06-15 23:25:55
+ * @Last Modified by: lich
+ * @Last Modified time: 2019-06-17 14:09:50
  */
 // ?$$  "$N        $$$  ^#$            $              d$*  "$d       '$$F  "$r   
 // '$$   $$k       9$$    '           d$N            $$F     *        $$>    *   
@@ -51,24 +51,39 @@
 //                                                      "                        
 
 import  "./base/compatible";
+/**画布的配置 */
 import { canvas } from "./config";
 
-import _ from 'lodash';
+// import _ from 'lodash';
 
 /**游戏组件 */
+/**背景构造器 */
 import Background from './game/Background';
-import {Snake,DIRECTION} from "./game/Snake";
+/**🐍构造器 */
+import {Snake} from "./game/Snake";
+/**食物构造器 */
 import {FoodFactory} from "./game/Food";
+/**碰撞器  食物碰撞 游戏结束 */
+import {isCollide , isGameOver} from "./game/collide";
 
-
-import {isCollide , isGameOver} from "./collide";
+/**枚举类 键盘值 和 运动方向 */
+import { KEYMAPS , DIRECTION } from "./enum";
+import GameCtrl from "./game";
 
 /**初始化游戏组件 */
 const background = new Background(); 
-const snake = new Snake(); 
+
+/**🐍 */
+let snake = new Snake(1,1,DIRECTION.down); 
+
+/**🐀 */
 const foodFactory = new FoodFactory(); 
-// let food = null;
-snake.speed = 0.3
+
+/**🎮控制 */
+const gameCtrl = new GameCtrl();
+
+
+
 /**
  * 每帧的更新
  * @param {Number} time 
@@ -76,6 +91,8 @@ snake.speed = 0.3
  */
 function update(time,ctx) {
     if(isGameOver(snake.header)){
+        gameCtrl.over(ctx);
+        // snake = new Snake(); 
         return console.log('over');
     }
 
@@ -91,40 +108,34 @@ function update(time,ctx) {
         snake.eat();
         foodFactory.destroyed();
     }
+    
     foodFactory.renderWas(ctx);
 }
 
-
-const keyMaps = {
-    'ArrowUp':'38',
-    'ArrowRight':'39',
-    'ArrowDown':'40',
-    'ArrowLeft':'37',
-}
 
 /**全局的按键事件
  * @param {KeyboardEvent} event 
  */
 function eventListener(event) {
     switch (String(event.keyCode)) {
-        case keyMaps.ArrowUp:
-            if(snake.direction === DIRECTION.down) return;
-            snake.direction = DIRECTION.up;
-            break;
-        case keyMaps.ArrowRight:
-            if(snake.direction === DIRECTION.left) return;
-            snake.direction = DIRECTION.right;
-            break;
-        case keyMaps.ArrowDown:
-            if(snake.direction === DIRECTION.up) return;
-            snake.direction = DIRECTION.down;
-            break;
-        case keyMaps.ArrowLeft:
-            if(snake.direction === DIRECTION.right) return;
-            snake.direction = DIRECTION.left;
-            break;
-        default:
-            break;
+    case KEYMAPS.ArrowUp:
+        if(snake.direction === DIRECTION.down) return;
+        snake.direction = DIRECTION.up;
+        break;
+    case KEYMAPS.ArrowRight:
+        if(snake.direction === DIRECTION.left) return;
+        snake.direction = DIRECTION.right;
+        break;
+    case KEYMAPS.ArrowDown:
+        if(snake.direction === DIRECTION.up) return;
+        snake.direction = DIRECTION.down;
+        break;
+    case KEYMAPS.ArrowLeft:
+        if(snake.direction === DIRECTION.right) return;
+        snake.direction = DIRECTION.left;
+        break;
+    default:
+        break;
     }
 }
 
@@ -137,14 +148,17 @@ function init() {
     c.height = canvas.height;
     c.width = canvas.width;
     // c.addEventListener('click')
-    window.addEventListener('keydown',eventListener)
+    window.addEventListener('keydown',eventListener);
     var ctx = c.getContext("2d");
     document.body.append(c);
     function loop() {
-        window.requestAnimationFrame((time)=>{
-            update(time,ctx);
-            loop();
-        });
+        // window.requestAnimationFrame((time)=>{
+        //     update(time,ctx);
+        //     loop();
+        // });
+        setInterval(()=>{
+            update(0,ctx);
+        },50);
     }
     loop();
 }

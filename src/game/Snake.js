@@ -1,15 +1,9 @@
 import { canvas } from "../config";
-const DIRECTION = {
-    'up':1,
-    'right':2,
-    'down':3,
-    'left':4
-};
+import { DIRECTION } from "../enum";
 
 /**🐍的一节身体 */
 class SnakeBody {
-    /**
-     * 
+    /** 
      * @param {number} x 
      * @param {number} y 
      * @param {SnakeBody} next 
@@ -17,7 +11,7 @@ class SnakeBody {
     constructor(x,y,next){
         this.x = x || 0;
         this.y = y || 0;
-        this.size = canvas.size; //保存size大小
+        // this.size = canvas.size; //保存size大小
         this.next = next || next;
     }
 }
@@ -53,9 +47,13 @@ class Snake {
      * @param {CanvasRenderingContext2D} ctx 
      */
     render (ctx){
-        ctx.fillStyle = '#000';
+    
         let node = this.header;
         let size = canvas.size;
+        ctx.fillStyle = '#ffff00';
+        ctx.fillRect(node.x*size,node.y*size,size,size);
+        ctx.fillStyle = '#000';
+        node = node.next;
         while (node) {
             ctx.fillRect(node.x*size,node.y*size,size,size);
             node = node.next;
@@ -97,63 +95,85 @@ class Snake {
         let prev = null;
         speed = speed || this.speed;
         switch (this.direction) {
-            case DIRECTION.up:
-                prev = new SnakeBody(this.header.x,calc(this.header.y,speed,'-'),next);
-                break;
-            case DIRECTION.right:
-                prev = new SnakeBody(calc(this.header.x,speed,'+'),this.header.y,next);
-                break;
-            case DIRECTION.down:
-                prev = new SnakeBody(this.header.x,calc(this.header.y,speed,'+'),next);
-                break;
-            case DIRECTION.left:
-                prev = new SnakeBody(calc(this.header.x,speed,'-'),this.header.y,next);
-                break;
-            default:
-                break;
+        case DIRECTION.up:
+            prev = new SnakeBody(this.header.x,calc(this.header.y,speed,'-'),next);
+            break;
+        case DIRECTION.right:
+            prev = new SnakeBody(calc(this.header.x,speed,'+'),this.header.y,next);
+            break;
+        case DIRECTION.down:
+            prev = new SnakeBody(this.header.x,calc(this.header.y,speed,'+'),next);
+            break;
+        case DIRECTION.left:
+            prev = new SnakeBody(calc(this.header.x,speed,'-'),this.header.y,next);
+            break;
+        default:
+            break;
         }
         return prev;
     }
+
+    // /**  在render 渲染一次之后进行位置的移动 
+    //  *  当前节点占据上一个节点的位置 。 并且缓存当前节点 ，作为 下次循环的上一个节点
+    //  *  生成一个超前的节点 给头节点占位
+    //  * */
+    // move (){
+    //     let speed = this.speed;
+    //     let prev = this.createNextBody(null,speed);
+    //     // prev = this.header;
+    //     // let current = prev.next;
+
+    //     // prev = this.header;
+    //     let current = this.header;
+    //     while (current) {
+           
+    //         let temp = new SnakeBody(current.x,current.y,null);
+
+    //         if(current.direct){
+    //             if(current[current.direct] !== prev[current.direct]){
+    //                 let direct = current[current.direct] > prev[current.direct]  ? -1 : 1;
+    //                 current[current.direct] = calc(current[current.direct],direct * speed , '+')  ;
+    //             }else{
+    //                 current.direct = null;
+    //             }
+    //         }
+    //         if(!current.direct){
+    //             //判断运动的方向
+    //             if(current.x !== prev.x){
+    //                 let direct = current.x > prev.x  ? -1 : 1;
+    //                 current.x = calc(current.x,direct * speed , '+');
+    //                 current.direct = 'x';
+    //             }else if(current.y !== prev.y){
+    //                 let direct = current.y > prev.y ? -1 : 1;
+    //                 // current.y +=  direct * speed;
+    //                 current.y = calc(current.y,direct * speed , '+');
+    //                 current.direct = 'y';
+    //             }
+    //         }
+
+            
+            
+    //         prev = temp ;
+    //         current = current.next;
+    //     }
+
+    // }
+
 
     /**  在render 渲染一次之后进行位置的移动 
      *  当前节点占据上一个节点的位置 。 并且缓存当前节点 ，作为 下次循环的上一个节点
      *  生成一个超前的节点 给头节点占位
      * */
     move (){
-        let speed = this.speed;
-        let prev = this.createNextBody(null,speed);
-        // prev = this.header;
-        // let current = prev.next;
+        let prev = this.createNextBody();
 
-        // prev = this.header;
         let current = this.header;
         while (current) {
            
             let temp = new SnakeBody(current.x,current.y,null);
 
-            if(current.direct){
-                if(current[current.direct] !== prev[current.direct]){
-                    let direct = current[current.direct] > prev[current.direct]  ? -1 : 1;
-                    current[current.direct] = calc(current[current.direct],direct * speed , '+')  ;
-                }else{
-                    current.direct = null;
-                }
-            }
-            if(!current.direct){
-                //判断运动的方向
-                if(current.x !== prev.x){
-                    let direct = current.x > prev.x  ? -1 : 1;
-                    current.x = calc(current.x,direct * speed , '+')
-                    current.direct = 'x';
-                }else if(current.y !== prev.y){
-                    let direct = current.y > prev.y ? -1 : 1;
-                    // current.y +=  direct * speed;
-                    current.y = calc(current.y,direct * speed , '+')
-                    current.direct = 'y';
-                }
-            }
-
-            
+            current.x = prev.x;
+            current.y = prev.y;
             
             prev = temp ;
             current = current.next;
@@ -165,12 +185,12 @@ class Snake {
 function calc(a,b,opreater) {
     let result = 0;
     switch (opreater) {
-        case '+': result = Math.round((a*1000+b*1000))/1000
-            break;
-        case '-': result = Math.round((a*1000-b*1000))/1000
-            break;
-        default:
-            break;
+    case '+': result = Math.round((a*1000+b*1000))/1000;
+        break;
+    case '-': result = Math.round((a*1000-b*1000))/1000;
+        break;
+    default:
+        break;
     }
     return result;
 }
