@@ -67,7 +67,7 @@ class Snake {
         //     this.count++;
         // }
 
-        this.move();
+        // this.move();
      
        
     }
@@ -196,6 +196,5 @@ function calc(a,b,opreater) {
 }
 
 export  {
-    Snake,
-    DIRECTION
+    Snake
 } ;

@@ -9,6 +9,7 @@ import { canvas } from "../config";
  * @returns {Boolean} 
  */
 function isCollide(food,snake) {
+    if(food === null || snake === null) return;
     let node = snake.header;
     let result = false;
     while ( result === false && node) {
@@ -57,7 +58,8 @@ function isSnakeToWall(header) {
 }
 
 function isGameOver(header) {
-    return  isSnakeToWall(header) ||  isSnakeSelfCollide(header) ;
+    // return  isSnakeToWall(header) ||  isSnakeSelfCollide(header) ;
+    return  isSnakeToWall(header)  ;
 }
 
 export  {

@@ -37,22 +37,25 @@ function routeMap() {
             if(store.length === 0){
                 this.init(20);
             }
-           return store.shift();
+            return store.shift();
         },
         init:function (len) {
-            let x_counts = canvas.x_counts;
-            let y_counts = canvas.y_counts;
+            // let x_counts = canvas.x_counts;
+            // let y_counts = canvas.y_counts;
 
-           let counts = was();
+            let counts = was();
+            counts.sort((a,b)=>{
+                return Math.random() - 0.5;
+            });
             counts.forEach(item=>{
                 this.set(new Food(item[0],item[1],null));
-            })
+            });
 
             // for (let index = 0; index < len; index++) {
             //     this.set(new Food(Math.floor(Math.random()*x_counts),Math.floor(Math.random()*y_counts),null));
             // }
         }
-    }
+    };
 }
 
 class FoodFactory {
@@ -66,7 +69,7 @@ class FoodFactory {
      * @returns {Food}
      */
     create(){
-        this.food = this.routeMap.create()
+        this.food = this.routeMap.create();
         return this.food;
     }
 
@@ -91,7 +94,7 @@ class FoodFactory {
         let size = canvas.size;
         this.was.forEach(item=>{
             ctx.fillRect(item.x*size,item.y*size,size,size);
-        })
+        });
     }
 
     destroyed(){

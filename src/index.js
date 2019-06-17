@@ -2,7 +2,7 @@
  * @Author: liar 
  * @Date: 2019-06-15 19:24:24 
  * @Last Modified by: lich
- * @Last Modified time: 2019-06-17 14:09:50
+ * @Last Modified time: 2019-06-17 16:09:46
  */
 // ?$$  "$N        $$$  ^#$            $              d$*  "$d       '$$F  "$r   
 // '$$   $$k       9$$    '           d$N            $$F     *        $$>    *   
@@ -78,9 +78,15 @@ let snake = new Snake(1,1,DIRECTION.down);
 
 /**🐀 */
 const foodFactory = new FoodFactory(); 
+foodFactory.create();
 
 /**🎮控制 */
 const gameCtrl = new GameCtrl();
+
+
+/**🐍自动寻找🐀 */
+import autoEat from "./autoEat/autoEat";
+
 
 
 
@@ -97,19 +103,24 @@ function update(time,ctx) {
     }
 
     background.render(ctx);
+    foodFactory.renderWas(ctx);
     snake.render(ctx);
+    foodFactory.render(ctx);
+
+    if(isCollide(foodFactory.food,snake)){
+        // snake.eat();
+        foodFactory.destroyed();
+    }
 
     if(!foodFactory.food){
         foodFactory.create();
     }
-    foodFactory.render(ctx);
 
-    if(isCollide(foodFactory.food,snake)){
-        snake.eat();
-        foodFactory.destroyed();
-    }
     
-    foodFactory.renderWas(ctx);
+
+    autoEat(snake,foodFactory.food);
+
+    snake.move();
 }
 
 
@@ -152,13 +163,13 @@ function init() {
     var ctx = c.getContext("2d");
     document.body.append(c);
     function loop() {
-        // window.requestAnimationFrame((time)=>{
-        //     update(time,ctx);
-        //     loop();
-        // });
-        setInterval(()=>{
-            update(0,ctx);
-        },50);
+        window.requestAnimationFrame((time)=>{
+            update(time,ctx);
+            loop();
+        });
+        // setInterval(()=>{
+        //     update(0,ctx);
+        // },50);
     }
     loop();
 }
